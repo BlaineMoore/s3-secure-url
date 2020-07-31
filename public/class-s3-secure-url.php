@@ -375,7 +375,7 @@ class S3_Secure_URL {
 	 * @see https://tournasdimitrios1.wordpress.com/2012/12/04/how-to-create-expiring-links-for-amazons-s3-with-php/
 	 */
 
-	private function awsS3SecureURL($bucketName , $objectPath , $expires = 5) {
+	private static function awsS3SecureURL($bucketName , $objectPath , $expires = 5) {
 
 		$awsAccessKey=get_option( 's3_secure_url_aws_access_key' );
 		$awsSecretKey=get_option( 's3_secure_url_aws_secret_key' );
@@ -416,8 +416,9 @@ class S3_Secure_URL {
 	 * @return string
 	 * @since    1.0.0
 	 */
-	public function sc_s3secureurl( $atts, $content = "" ) {
+	public static function sc_s3secureurl( $atts, $content = "" ) {
 		extract(shortcode_atts(array(
+			'file' => '',
 			'bucket' => '',
 			'target' => '',
 			'expires' => 5,
@@ -432,6 +433,8 @@ class S3_Secure_URL {
 			return '';
 		}
 
+		if(!$target) { $target = $file; }
+		
 		if(!$bucket || !$target || !$expires || $expires<=0){
 			return '';
 		}
