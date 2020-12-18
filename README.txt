@@ -3,8 +3,8 @@ Contributors: maxkostinevich
 Donate link: https://maxkostinevich.com
 Tags: s3, aws, amazon, secure, url, link, temporary link, temporary url, expiring url, expire links, private files, share link
 Requires at least: 3.5.1
-Tested up to: 4.2
-Stable tag: 1.0.0
+Tested up to: 5.6
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -78,6 +78,12 @@ Read the [detailed guide](https://maxkostinevich.com/blog/simple-way-to-sell-and
 
 
 == Changelog ==
+
+= 1.0.1 = 
+* Blaine Moore: added urlformat parameter to get around bug with subdomains and DNS not working for buckets
+
+= 1.0.1 =
+* Blaine Moore: updated static methods to keep plugin working
 
 = 1.0.0 =
 * Initial release
