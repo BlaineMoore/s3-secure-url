@@ -12,7 +12,7 @@
  * Plugin Name:       S3 Secure URL
  * Plugin URI:        https://maxkostinevich.com/projects/s3-secure-url
  * Description:       Create temporary secure URLs to protected Amazon S3 files.
- * Version:           1.0.2
+ * Version:           1.1.0
  * Author:            Max Kostinevich (updates by Blaine Moore)
  * Author URI:        https://maxkostinevich.com
  * Text Domain:       s3-secure-url-locale

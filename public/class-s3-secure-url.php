@@ -28,7 +28,7 @@ class S3_Secure_URL {
 	 *
 	 * @var     string
 	 */
-	const VERSION = '1.0.1';
+	const VERSION = '1.1.0';
 
 	/**
 	 * Unique identifier for your plugin.
@@ -375,7 +375,7 @@ class S3_Secure_URL {
 	 * @see https://tournasdimitrios1.wordpress.com/2012/12/04/how-to-create-expiring-links-for-amazons-s3-with-php/
 	 */
 
-	private static function awsS3SecureURL($bucketName , $objectPath , $expires = 5) {
+	private static function awsS3SecureURL($bucketName , $objectPath , $expires = 5, $urlformat = 'default') {
 
 		$awsAccessKey=get_option( 's3_secure_url_aws_access_key' );
 		$awsSecretKey=get_option( 's3_secure_url_aws_secret_key' );
@@ -392,7 +392,20 @@ class S3_Secure_URL {
 		// Calculating  HMAC-sha1
 		$hashedSignature = base64_encode(hash_hmac('sha1' ,$signature , $awsSecretKey , true )) ;
 		// Constructing the URL
-		$url = sprintf('https://%s.s3.amazonaws.com/%s', $bucketName , $objectPath);
+		switch($urlformat) {
+			case "domain": $urlsyntax = 'https://%s/%s'; break;
+			case "folder": $urlsyntax = 'https://s3.amazonaws.com/%s/%s'; break;
+			case "default":
+			default:
+				$domainpattern = '/^((?!-)[A-Za-z0-9-]{1,63}(?<!-)\\.)+[A-Za-z]{2,6}$/';
+				if(preg_match($domainpattern, $bucketName)) {
+					$urlsyntax = 'https://%s/%s';
+				} else {
+					$urlsyntax = 'https://s3.amazonaws.com/%s/%s';
+				}
+				break;
+		}
+		$url = sprintf($urlsyntax, $bucketName , $objectPath);
 		// Constructing the query String
 		$queryString = http_build_query( array(
 			'AWSAccessKeyId' => $awsAccessKey ,
@@ -410,6 +423,7 @@ class S3_Secure_URL {
 	 *          bucket Amazon S3 Bucket Name
 	 *          target The target file path starting with slash (e.g. '/folder-name/file-name.png')
 	 *          expires Time to expire in minutes
+	 *			urlformat How to handle the bucket, as a "domain" or "folder" or by "default" to guess if it's a domain or folder.
 	 *
 	 * @param string $content
 	 *
@@ -422,6 +436,7 @@ class S3_Secure_URL {
 			'bucket' => '',
 			'target' => '',
 			'expires' => 5,
+			'urlformat' => 'default'
 		), $atts));
 
 		$expires=(int)$expires;
@@ -439,7 +454,7 @@ class S3_Secure_URL {
 			return '';
 		}
 
-		$secureURL=self::awsS3SecureURL($bucket,$target,$expires);
+		$secureURL=self::awsS3SecureURL($bucket,$target,$expires,$urlformat);
 
 		if($content!=''){
 			return '<a href="'.$secureURL.'" rel="nofollow" target="_blank">'.$content.'</a>';
