@@ -8,13 +8,13 @@
  * @link      http://maxkostinevich.com
  * @copyright 2015 Max Kostinevich
  *
- * @wordpress-plugin
+ * @wordpress-plugin	
  * Plugin Name:       S3 Secure URL
- * Plugin URI:        https://maxkostinevich.com/projects/s3-secure-url
+ * Plugin URI:        https://github.com/BlaineMoore/s3-secure-url
  * Description:       Create temporary secure URLs to protected Amazon S3 files.
- * Version:           1.1.0
+ * Version:           1.2.0
  * Author:            Max Kostinevich (updates by Blaine Moore)
- * Author URI:        https://maxkostinevich.com
+ * Author URI:        https://github.com/BlaineMoore/s3-secure-url
  * Text Domain:       s3-secure-url-locale
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
