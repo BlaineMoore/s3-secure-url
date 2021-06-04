@@ -333,6 +333,23 @@ class S3_Secure_URL_Admin {
 					}
 				}
 				break;
+			case 'combobox':
+				if(is_array($field['options'])){
+					?>
+					<input type="text" list="<?php echo $field_id;?>list" id="<?php echo $field_id;?>" class="<?php echo $field_class;?>" name="<?php echo $args['name'];?>" value="<?php echo $setting_value; ?>" />
+					<datalist id="<?php echo $field_id;?>list">
+					<?php
+						foreach($field['options'] as $k=>$v){
+					?>
+						<option value="<?php echo $k;?>" <?php selected( $setting_value, $k, true);?>><?php echo $v;?></option>
+					<?php
+						}
+					?>
+					</datalist>
+					<?php echo $field_descr;?>
+				<?php
+				}
+				break;
 			case 'dropdown':
 				if(is_array($field['options'])){
 					?>

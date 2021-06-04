@@ -28,7 +28,7 @@ class S3_Secure_URL {
 	 *
 	 * @var     string
 	 */
-	const VERSION = '1.1.0';
+	const VERSION = '1.2.0';
 
 	/**
 	 * Unique identifier for your plugin.
@@ -66,6 +66,47 @@ class S3_Secure_URL {
 			'hidden'=>1
 		),
 
+		array(
+			'name'=>'s3_secure_url_servername',
+			'title'=>'S3 Compatible Server',
+			'section'=>'main-section',
+			'field'=>array(
+				'type'=>'combobox',
+				'description'=>'Choose from dropdown or enter custom server (defaults to AWS US East 1)',
+				'class'=>'regular-text',
+				'options'=>array(
+					"s3.amazonaws.com"=>"AWS US East (N. Virginia)",
+					"s3.wasabisys.com"=>"Wasabi US East 1 (N. Virginia)",
+					"s3-website.us-east-2.amazonaws.com"=>"AWS US East (Ohio)",
+					"s3.us-east-2.wasabisys.com"=>"Wasabi US East 2 (N. Virginia)",
+					"s3.us-central-1.wasabisys.com"=>"Wasabi US Central 1 (Texas)",
+					"s3-website-us-west-1.amazonaws.com"=>"AWS US West (N. California)",
+					"s3-website-us-west-2.amazonaws.com"=>"AWS US West (Oregon)",
+					"s3.us-west-1.wasabisys.com"=>"Wasabi US West 1 (Oregon)",
+					"s3-website.af-south-1.amazonaws.com"=>"AWS Africa (Cape Town)",
+					"s3-website.ap-east-1.amazonaws.com"=>"AWS Asia Pacific (Hong Kong)",
+					"s3-website.ap-south-1.amazonaws.com"=>"AWS Asia Pacific (Mumbai)",
+					"s3-website.ap-northeast-3.amazonaws.com"=>"AWS Asia Pacific (Osaka)",
+					"s3-website.ap-northeast-2.amazonaws.com"=>"AWS Asia Pacific (Seoul)",
+					"s3-website-ap-southeast-1.amazonaws.com"=>"AWS Asia Pacific (Singapore)",
+					"s3-website-ap-southeast-2.amazonaws.com"=>"AWS Asia Pacific (Sydney)",
+					"s3-website-ap-northeast-1.amazonaws.com"=>"AWS Asia Pacific (Tokyo)",
+					"s3-website.ca-central-1.amazonaws.com"=>"AWS Canada (Central)",
+					"s3-website.cn-northwest-1.amazonaws.com.cn"=>"AWS China (Ningxia)",
+					"s3-website.eu-central-1.amazonaws.com"=>"AWS Europe (Frankfurt)",
+					"s3.eu-central-1.wasabisys.com"=>"Wasabi EU Central 1 (Amsterdam)",
+					"s3-website-eu-west-1.amazonaws.com"=>"AWS Europe (Ireland)",
+					"s3-website.eu-west-2.amazonaws.com"=>"AWS Europe (London)",
+					"s3-website.eu-south-1.amazonaws.com"=>"AWS Europe (Milan)",
+					"s3-website.eu-west-3.amazonaws.com"=>"AWS Europe (Paris)",
+					"s3-website.eu-north-1.amazonaws.com"=>"AWS Europe (Stockholm)",
+					"s3-website.me-south-1.amazonaws.com"=>"AWS Middle East(Bahrain)",
+					"s3-website-sa-east-1.amazonaws.com"=>"AWS South America (São Paulo)",
+					"s3-website.us-gov-east-1.amazonaws.com"=>"AWS GovCloud (US-East)",
+					"s3-website-us-gov-west-1.amazonaws.com"=>"AWS GovCloud (US-West)"
+				)
+			),
+		),
 
 		array(
 			'name'=>'s3_secure_url_aws_access_key',
@@ -100,7 +141,7 @@ class S3_Secure_URL {
 	public static $pluginDefaultOptions=array(
 		'plugin_version'=>array(
 			'name'=>'s3_secure_url_plugin_version',
-			'value'=>'1.0.0'
+			'value'=>'1.2.0'
 		)
 	);
 
@@ -377,9 +418,11 @@ class S3_Secure_URL {
 
 	private static function awsS3SecureURL($bucketName , $objectPath , $expires = 5, $urlformat = 'default') {
 
+		$awsServer=get_option( 's3_secure_url_servername' );
 		$awsAccessKey=get_option( 's3_secure_url_aws_access_key' );
 		$awsSecretKey=get_option( 's3_secure_url_aws_secret_key' );
 
+		if(!$awsServer) { $awsServer = 's3.amazonaws.com'; }
 		if(!$awsAccessKey || !$awsSecretKey){
 			return '';
 		}
@@ -394,14 +437,14 @@ class S3_Secure_URL {
 		// Constructing the URL
 		switch($urlformat) {
 			case "domain": $urlsyntax = 'https://%s/%s'; break;
-			case "folder": $urlsyntax = 'https://s3.amazonaws.com/%s/%s'; break;
+			case "folder": $urlsyntax = "https://$awsServer/%s/%s"; break;
 			case "default":
 			default:
 				$domainpattern = '/^((?!-)[A-Za-z0-9-]{1,63}(?<!-)\\.)+[A-Za-z]{2,6}$/';
 				if(preg_match($domainpattern, $bucketName)) {
 					$urlsyntax = 'https://%s/%s';
 				} else {
-					$urlsyntax = 'https://s3.amazonaws.com/%s/%s';
+					$urlsyntax = "https://$awsServer/%s/%s";
 				}
 				break;
 		}
@@ -441,9 +484,11 @@ class S3_Secure_URL {
 
 		$expires=(int)$expires;
 
+		$awsServer=get_option( 's3_secure_url_servername' );
 		$awsAccessKey=get_option( 's3_secure_url_aws_access_key' );
 		$awsSecretKey=get_option( 's3_secure_url_aws_secret_key' );
 
+		if(!$awsServer) { $awsServer = 's3.amazonaws.com'; }
 		if(!$awsAccessKey || !$awsSecretKey){
 			return '';
 		}
